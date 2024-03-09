@@ -24,11 +24,10 @@ export default function d2(md: any, config: Config = {}) {
         const code = token.content.trim();
 
         // Generate unique filename for diagram SVG output file
-        const svgFilename = `d2-diagram-${Date.now()}.svg`;
-        const svgFilePath = path.join(outputDir, svgFilename);
+        const svgFilePath = path.join(outputDir, `d2-diagram-${Date.now()}.svg`);
 
         // Write the D2 diagram code to a temporary .d2 file
-        const tempD2FilePath = "temp.d2";
+        const tempD2FilePath = path.join(outputDir, "temp.d2");
         writeFileSync(tempD2FilePath, code);
 
         // Construct command line arguments from config
