@@ -1,5 +1,5 @@
 import { spawnSync } from "child_process";
-import { writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs";
+import { writeFileSync, unlinkSync, existsSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { Config, Layout } from "./config.js";
 
@@ -96,11 +96,25 @@ export default function d2(md: any, config: Config = {}) {
         // Run D2 command to generate output diagram SVG file
         spawnSync("d2", args);
 
+        // Get diagram SVG file content
+        const svgContent = readFileSync(svgFilePath, { encoding: 'utf8' });
+
+        // Encode SVG into data URI format
+        const encodedSVG = encodeURIComponent(svgContent)
+            .replace(/'/g, "%27")
+            .replace(/"/g, "%22");
+        
+        // Create data URI for diagram SVG
+        const dataUri = `data:image/svg+xml,${encodedSVG}`;
+
+        // Delete the SVG file as no longer required
+        unlinkSync(svgFilePath);
+
         // Delete temporary D2 file
         unlinkSync(tempD2FilePath);
 
-        // Return an image tag that links to the SVG file
-        return `<img src="${svgFilePath}" class="d2-diagram" alt="D2 Diagram" />`;
+        // Return an image tag with the Data URI as the source
+        return `<img src="${dataUri}" class="d2-diagram" alt="D2 Diagram" />`;
     }
 
     // For other languages return the original fence
