@@ -19,6 +19,12 @@ Once you have installed D2, you can check it is working by running the following
 d2 --version
 ```
 
+Depending on where you are running the build process (such as GitHub codespaces) you may need to grand permissions to the `d2-diagram` directory using something like the below command.
+
+```bash
+sudo chown codespace:codespace /d2-diagrams/
+```
+
 ## Installation
 
 First, install the plugin from NPM.
