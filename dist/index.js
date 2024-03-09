@@ -126,7 +126,7 @@ export default function d2(md, defaultConfig = {}) {
                 args.push(`--theme=${config.theme}`);
             }
             if (config.darkTheme != null) {
-                args.push(`--theme=${config.darkTheme}`);
+                args.push(`--darkTheme=${config.darkTheme}`);
             }
             if (config.padding != null) {
                 args.push(`--pad=${config.padding}`);
