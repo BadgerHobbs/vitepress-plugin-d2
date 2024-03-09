@@ -39,6 +39,7 @@ import { defineConfig } from "vitepress";
 
 // Import D2 diagram plugin
 import d2 from "vitepress-plugin-d2"
+import { Layout, Theme } from 'vitepress-plugin-d2/dist/config';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -50,12 +51,23 @@ export default defineConfig({
   },
   markdown: {
     config: (md) => {
-        // Use D2 diagram plugin with optional configuration
-        md.use(d2, {
-            config: {
-                ...
-            },
-        });
+      // Use D2 diagram plugin with optional configuration
+      md.use(d2, {
+        forceAppendix: false,
+        layout: Layout.ELK,
+        theme: Theme.NEUTRAL_DEFAULT,
+        darkTheme: Theme.DARK_MUAVE,
+        padding: 100,
+        animatedInterval: 0,
+        timeout: 120,
+        sketch: false,
+        center: false,
+        scale: -1,
+        target: "*",
+        fontItalic: null,
+        fontBold: null,
+        fontSemiBold: null,
+      });
     },
   },
 });
