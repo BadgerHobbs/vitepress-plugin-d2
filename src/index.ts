@@ -38,27 +38,27 @@ export default function d2(md: any, config: Config = {}) {
             args.push("--force-appendix");
         }
 
-        if (config.layout !== undefined) {
+        if (config.layout != null) {
             args.push(`--layout=${Layout[config.layout].toLowerCase()}`);
         }
 
-        if (config.theme !== undefined) {
-            args.push(`--theme=${Theme[config.theme]}`);
+        if (config.theme != null) {
+            args.push(`--theme=${config.theme}`);
         }
 
-        if (config.darkTheme !== undefined) {
-            args.push(`--theme=${Theme[config.darkTheme]}`);
+        if (config.darkTheme != null) {
+            args.push(`--theme=${config.darkTheme}`);
         }
 
-        if (config.padding !== undefined) {
+        if (config.padding != null) {
             args.push(`--pad=${config.padding}`);
         }
 
-        if (config.animateInterval !== undefined) {
+        if (config.animateInterval != null) {
             args.push(`--animate-interval=${config.animateInterval}`);
         }
 
-        if (config.timeout !== undefined) {
+        if (config.timeout != null) {
             args.push(`--timeout=${config.timeout}`);
         }
 
@@ -70,27 +70,27 @@ export default function d2(md: any, config: Config = {}) {
             args.push("--center");
         }
 
-        if (config.scale !== undefined) {
+        if (config.scale != null) {
             args.push(`--scale=${config.scale}`);
         }
 
-        if (config.target !== undefined) {
+        if (config.target != null) {
             args.push(`--target=${config.target}`);
         }
 
-        if (config.fontRegular !== undefined) {
+        if (config.fontRegular != null) {
             args.push(`--font-regular=${config.fontRegular}`);
         }
 
-        if (config.fontItalic !== undefined) {
+        if (config.fontItalic != null) {
             args.push(`--font-italic=${config.fontItalic}`);
         }
 
-        if (config.fontBold !== undefined) {
+        if (config.fontBold != null) {
             args.push(`--font-bold=${config.fontBold}`);
         }
 
-        if (config.fontSemiBold !== undefined) {
+        if (config.fontSemiBold != null) {
             args.push(`--font-semibold=${config.fontSemiBold}`);
         }
 
