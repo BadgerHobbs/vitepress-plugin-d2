@@ -1,4 +1,7 @@
 import { defineConfig } from 'vitepress'
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Import D2 diagram plugin
 import d2 from 'vitepress-plugin-d2';
@@ -8,6 +11,7 @@ import { Layout, Theme, FileType } from 'vitepress-plugin-d2/dist/config';
 export default defineConfig({
   title: "VitePress Plugin D2 Example",
   description: "VitePress D2 plugin example site.",
+  base: process.env.BASE_PATH || "/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     footer: {

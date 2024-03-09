@@ -55,12 +55,14 @@ jobs:
           sudo chown -R $(whoami) /d2-diagrams
         
       - name: Build with VitePress
+        env:
+          BASE_PATH: "/vitepress-plugin-d2/"
         run: npm run docs:build
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist
+          path: ./example/.vitepress/dist
 
   # Deployment job
   deploy:
