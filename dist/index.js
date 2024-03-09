@@ -1,7 +1,7 @@
 import { spawnSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs";
 import path from "path";
-import { Layout, Theme } from "./config.js";
+import { Layout } from "./config.js";
 export default function d2(md, config = {}) {
     // Store original fence to return if no D2 diagram rendered
     const originalFence = md.renderer.rules.fence.bind(md.renderer.rules);
@@ -18,32 +18,31 @@ export default function d2(md, config = {}) {
             // Get D2 diagram code
             const code = token.content.trim();
             // Generate unique filename for diagram SVG output file
-            const svgFilename = `d2-diagram-${Date.now()}.svg`;
-            const svgFilePath = path.join(`/${outputDir}/`, svgFilename);
+            const svgFilePath = path.join(outputDir, `d2-diagram-${Date.now()}.svg`);
             // Write the D2 diagram code to a temporary .d2 file
-            const tempD2FilePath = "temp.d2";
+            const tempD2FilePath = path.join(outputDir, "temp.d2");
             writeFileSync(tempD2FilePath, code);
             // Construct command line arguments from config
             const args = [tempD2FilePath, svgFilePath];
             if (config.forceAppendix === true) {
                 args.push("--force-appendix");
             }
-            if (config.layout !== undefined) {
+            if (config.layout != null) {
                 args.push(`--layout=${Layout[config.layout].toLowerCase()}`);
             }
-            if (config.theme !== undefined) {
-                args.push(`--theme=${Theme[config.theme]}`);
+            if (config.theme != null) {
+                args.push(`--theme=${config.theme}`);
             }
-            if (config.darkTheme !== undefined) {
-                args.push(`--theme=${Theme[config.darkTheme]}`);
+            if (config.darkTheme != null) {
+                args.push(`--theme=${config.darkTheme}`);
             }
-            if (config.padding !== undefined) {
+            if (config.padding != null) {
                 args.push(`--pad=${config.padding}`);
             }
-            if (config.animateInterval !== undefined) {
+            if (config.animateInterval != null) {
                 args.push(`--animate-interval=${config.animateInterval}`);
             }
-            if (config.timeout !== undefined) {
+            if (config.timeout != null) {
                 args.push(`--timeout=${config.timeout}`);
             }
             if (config.sketch === true) {
@@ -52,22 +51,22 @@ export default function d2(md, config = {}) {
             if (config.center === true) {
                 args.push("--center");
             }
-            if (config.scale !== undefined) {
+            if (config.scale != null) {
                 args.push(`--scale=${config.scale}`);
             }
-            if (config.target !== undefined) {
+            if (config.target != null) {
                 args.push(`--target=${config.target}`);
             }
-            if (config.fontRegular !== undefined) {
+            if (config.fontRegular != null) {
                 args.push(`--font-regular=${config.fontRegular}`);
             }
-            if (config.fontItalic !== undefined) {
+            if (config.fontItalic != null) {
                 args.push(`--font-italic=${config.fontItalic}`);
             }
-            if (config.fontBold !== undefined) {
+            if (config.fontBold != null) {
                 args.push(`--font-bold=${config.fontBold}`);
             }
-            if (config.fontSemiBold !== undefined) {
+            if (config.fontSemiBold != null) {
                 args.push(`--font-semibold=${config.fontSemiBold}`);
             }
             // Run D2 command to generate output diagram SVG file
