@@ -1,7 +1,7 @@
 import { spawnSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs";
 import path from "path";
-import { Config, Layout, Theme } from "./config.js";
+import { Config, Layout } from "./config.js";
 
 export default function d2(md: any, config: Config = {}) {
   // Store original fence to return if no D2 diagram rendered
