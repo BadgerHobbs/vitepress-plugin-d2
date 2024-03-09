@@ -139,4 +139,7 @@ export interface Config {
 
   /** File type to export diagram images as, either SVG, PNG or GIF. (default SVG) */
   fileType?: FileType | undefined;
+
+  /** Directory to export temporary diagram files and images to. (default d2-diagrams) */
+  directory?: string | undefined;
 }
