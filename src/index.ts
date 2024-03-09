@@ -104,13 +104,8 @@ export default function d2(md: any, config: Config = {}) {
            console.error(`Error: Failed to generate D2 diagram.\n${command.stderr}`);
        }
 
-        // Get diagram image file content
-        const imageContent = readFileSync(imageFilePath, { encoding: "utf8" });
-
-        // Encode image into data URI format
-        const encodedImage = encodeURIComponent(imageContent)
-            .replace(/'/g, "%27")
-            .replace(/"/g, "%22");
+        // Get diagram image file content as a base64-encoded string
+        const imageContent = readFileSync(imageFilePath, { encoding: "base64" });
 
         // Get media type from file type
         let mediaType;
@@ -126,8 +121,8 @@ export default function d2(md: any, config: Config = {}) {
                 break;
         }
         
-        // Create data URI for diagram image
-        const dataUri = `data:${mediaType},${encodedImage}`;
+        // Create data URI for diagram image in base64 format
+        const dataUri = `data:${mediaType};base64,${imageContent}`;
 
         // Delete the image file as no longer required
         unlinkSync(imageFilePath);
