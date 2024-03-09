@@ -68,7 +68,7 @@ export default defineConfig({
         fontBold: null,
         fontSemiBold: null,
         fileType: FileType.SVG,
-        directory: "d2-diagram",
+        directory: "d2-diagrams",
       });
     },
   },
