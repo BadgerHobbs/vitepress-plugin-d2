@@ -6,7 +6,7 @@ export default function d2(md, config = {}) {
     // Store original fence to return if no D2 diagram rendered
     const originalFence = md.renderer.rules.fence.bind(md.renderer.rules);
     // Create output directory if not exist
-    const outputDir = "/d2-diagrams";
+    const outputDir = `/${config.directory ?? "d2-diagrams"}`;
     if (!existsSync(outputDir)) {
         mkdirSync(outputDir, { recursive: true });
     }
