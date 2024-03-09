@@ -1,22 +1,112 @@
 import { spawnSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
-import { Layout, FileType } from "./config.js";
-export default function d2(md, config = {}) {
+import { Layout, FileType, Theme } from "./config.js";
+/**
+ * Function to parse diagram config located in code block.
+ * @param code Diagram D2 code.
+ * @returns Configuration and code (config removed).
+ */
+function parseAndConvertConfig(code) {
+    // Define the regex for parsing the config
+    const configRegex = /:::config([\s\S]+?):::/g;
+    // Temporary storage for the string config
+    const userConfig = {};
+    // Parse the config from the code block
+    const matches = code.matchAll(configRegex);
+    for (const match of matches) {
+        if (match[1]) {
+            const configLines = match[1].trim().split("\n");
+            for (const line of configLines) {
+                const [key, value] = line.split(":").map((s) => s.trim());
+                if (key && value !== undefined) {
+                    userConfig[key] = value;
+                }
+            }
+        }
+    }
+    // Clean the diagram code by removing the config
+    code = code.replace(configRegex, "").trim();
+    // Convert string config into actual config values
+    const config = {};
+    for (const [key, stringValue] of Object.entries(userConfig)) {
+        switch (key) {
+            case "forceAppendix":
+                config.forceAppendix = stringValue === "true";
+                break;
+            case "layout":
+                config.layout = Layout[stringValue];
+                break;
+            case "theme":
+                config.theme = Theme[stringValue];
+                break;
+            case "darkTheme":
+                config.darkTheme = Theme[stringValue];
+                break;
+            case "padding":
+                config.padding = parseInt(stringValue, 10);
+                break;
+            case "animateInterval":
+                config.animateInterval = parseInt(stringValue, 10);
+                break;
+            case "timeout":
+                config.timeout = parseInt(stringValue, 10);
+                break;
+            case "sketch":
+                config.sketch = stringValue === "true";
+                break;
+            case "center":
+                config.center = stringValue === "true";
+                break;
+            case "scale":
+                config.scale = parseFloat(stringValue);
+                break;
+            case "target":
+                config.target = stringValue;
+                break;
+            case "fontRegular":
+                config.fontRegular = stringValue;
+                break;
+            case "fontItalic":
+                config.fontItalic = stringValue;
+                break;
+            case "fontBold":
+                config.fontBold = stringValue;
+                break;
+            case "fontSemiBold":
+                config.fontSemiBold = stringValue;
+                break;
+            case "fileType":
+                config.fileType = FileType[stringValue];
+                break;
+            case "directory":
+                config.directory = stringValue;
+                break;
+        }
+    }
+    return { config, code };
+}
+/**
+ * D2 plugin to convert markdown D2 code blocks to images.
+ * @param md Markdown.
+ * @param defaultConfig Default D2 plugin config.
+ */
+export default function d2(md, defaultConfig = {}) {
     // Store original fence to return if no D2 diagram rendered
     const originalFence = md.renderer.rules.fence.bind(md.renderer.rules);
-    // Create output directory if not exist
-    const outputDir = `/${config.directory ?? "d2-diagrams"}`;
-    if (!existsSync(outputDir)) {
-        mkdirSync(outputDir, { recursive: true });
-    }
     md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
         const token = tokens[idx];
         const tokenInfo = token.info.toLowerCase();
         // If code fence is for D2 diagram
         if (tokenInfo === "d2" || tokenInfo === "d2lang") {
-            // Get D2 diagram code
-            const code = token.content.trim();
+            const { config: diagramConfig, code: code } = parseAndConvertConfig(token.content);
+            // Merge default config with diagram config
+            const config = { ...defaultConfig, ...diagramConfig };
+            // Create output directory if not exist
+            const outputDir = `/${config.directory ?? "d2-diagrams"}`;
+            if (!existsSync(outputDir)) {
+                mkdirSync(outputDir, { recursive: true });
+            }
             // Get filetype
             const fileType = FileType[config.fileType ?? FileType.SVG];
             // Generate unique filename for diagram image output file

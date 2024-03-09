@@ -85,6 +85,20 @@ x -> y
 ```
 ````
 
+The configuration defined within the VitePress `config.mts` is the default config applied to all diagrams. If you want to override this configuration for a specific diagram, you can do so with the below syntax.
+
+````
+```d2
+:::config
+layout: DAGRE
+theme: GRAPE_SODA
+darkTheme: BUTTERED_TOAST
+:::
+
+x -> y
+```
+````
+
 See the `/example` directory within the repository for a full working example of how to use the plugin with VitePress.
 
 ## Further Reading
