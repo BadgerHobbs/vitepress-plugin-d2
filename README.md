@@ -29,7 +29,7 @@ sudo chown codespace:codespace /d2-diagrams/
 
 First, install the plugin from NPM.
 ```bash
-npm install vitepress-plugin-d2
+npm install -D vitepress-plugin-d2
 ```
 
 Then import it and update your VitePress `config.mts` file to use the plugin as shown below.
