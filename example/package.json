@@ -13,6 +13,6 @@
   "license": "ISC",
   "devDependencies": {
     "vitepress": "^1.0.0-rc.45",
-    "vitepress-plugin-d2": "github:BadgerHobbs/vitepress-plugin-d2"
+    "vitepress-plugin-d2": "^1.0.0"
   }
 }
