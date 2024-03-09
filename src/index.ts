@@ -8,7 +8,7 @@ export default function d2(md: any, config: Config = {}) {
   const originalFence = md.renderer.rules.fence.bind(md.renderer.rules);
 
   // Create output directory if not exist
-  const outputDir = "d2-diagrams";
+  const outputDir = "/d2-diagrams";
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true });
   }
