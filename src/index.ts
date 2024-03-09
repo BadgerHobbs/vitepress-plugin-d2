@@ -97,10 +97,15 @@ export default function d2(md: any, config: Config = {}) {
         }
 
         // Run D2 command to generate output diagram image file
-        spawnSync("d2", args);
+        const command = spawnSync("d2", args, { encoding: "utf-8", stdio: "pipe" });
+
+        // Log any error with D2 command
+       if (command.status !== 0) {
+           console.error(`Error: Failed to generate D2 diagram.\n${command.stderr}`);
+       }
 
         // Get diagram image file content
-        const imageContent = readFileSync(imageFilePath, { encoding: 'utf8' });
+        const imageContent = readFileSync(imageFilePath, { encoding: "utf8" });
 
         // Encode image into data URI format
         const encodedImage = encodeURIComponent(imageContent)
