@@ -1,7 +1,7 @@
 import { spawnSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
-import { Config, Layout } from "./config.js";
+import { Config, Layout, FileType } from "./config.js";
 
 export default function d2(md: any, config: Config = {}) {
   // Store original fence to return if no D2 diagram rendered
@@ -23,15 +23,18 @@ export default function d2(md: any, config: Config = {}) {
         // Get D2 diagram code
         const code = token.content.trim();
 
-        // Generate unique filename for diagram SVG output file
-        const svgFilePath = path.join(outputDir, `d2-diagram-${Date.now()}.svg`);
+        // Get filetype
+        const fileType = FileType[config.fileType ?? FileType.SVG]
+
+        // Generate unique filename for diagram image output file
+        const imageFilePath = path.join(outputDir, `d2-diagram-${Date.now()}.${fileType.toLowerCase()}`);
 
         // Write the D2 diagram code to a temporary .d2 file
         const tempD2FilePath = path.join(outputDir, "temp.d2");
         writeFileSync(tempD2FilePath, code);
 
         // Construct command line arguments from config
-        const args = [tempD2FilePath, svgFilePath];
+        const args = [tempD2FilePath, imageFilePath];
         
         if (config.forceAppendix === true) {
             args.push("--force-appendix");
@@ -93,22 +96,36 @@ export default function d2(md: any, config: Config = {}) {
             args.push(`--font-semibold=${config.fontSemiBold}`);
         }
 
-        // Run D2 command to generate output diagram SVG file
+        // Run D2 command to generate output diagram image file
         spawnSync("d2", args);
 
-        // Get diagram SVG file content
-        const svgContent = readFileSync(svgFilePath, { encoding: 'utf8' });
+        // Get diagram image file content
+        const imageContent = readFileSync(imageFilePath, { encoding: 'utf8' });
 
-        // Encode SVG into data URI format
-        const encodedSVG = encodeURIComponent(svgContent)
+        // Encode image into data URI format
+        const encodedImage = encodeURIComponent(imageContent)
             .replace(/'/g, "%27")
             .replace(/"/g, "%22");
-        
-        // Create data URI for diagram SVG
-        const dataUri = `data:image/svg+xml,${encodedSVG}`;
 
-        // Delete the SVG file as no longer required
-        unlinkSync(svgFilePath);
+        // Get media type from file type
+        let mediaType;
+        switch(fileType) {
+            case FileType.SVG:
+                mediaType = "image/svg+xml";
+                break;
+            case FileType.PNG:
+                mediaType = "image/png";
+                break;
+            case FileType.GIF:
+                mediaType = "image/gif";
+                break;
+        }
+        
+        // Create data URI for diagram image
+        const dataUri = `data:${mediaType},${encodedImage}`;
+
+        // Delete the image file as no longer required
+        unlinkSync(imageFilePath);
 
         // Delete temporary D2 file
         unlinkSync(tempD2FilePath);

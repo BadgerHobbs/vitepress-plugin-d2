@@ -39,7 +39,7 @@ import { defineConfig } from "vitepress";
 
 // Import D2 diagram plugin
 import d2 from "vitepress-plugin-d2"
-import { Layout, Theme } from 'vitepress-plugin-d2/dist/config';
+import { Layout, Theme, FileType } from 'vitepress-plugin-d2/dist/config';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -67,6 +67,7 @@ export default defineConfig({
         fontItalic: null,
         fontBold: null,
         fontSemiBold: null,
+        fileType: FileType.SVG,
       });
     },
   },

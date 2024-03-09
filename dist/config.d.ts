@@ -53,6 +53,17 @@ export declare enum Theme {
     DARK_FLAGSHIP_TERRASTRUCT = 201
 }
 /**
+ * Enum defining D2 export file types.
+ */
+export declare enum FileType {
+    /** SVG is the default export format on the CLI. If you don't specify an output, the export file will be the input name as an SVG file. */
+    SVG = "SVG",
+    /** PNG exports work by Playwright spinning up a headless browser, putting the SVG onto it, and taking a screenshot. The first invocation of Playwright will download its dependencies, if they don't already exist on the machine. */
+    PNG = "PNG",
+    /** GIF export format is useful for giving presentations when used with short compositions. For example, show two Scenarios, show a couple of steps. Something that the audience can digest in a loop that lasts a couple of seconds without needing to flip through it manually. */
+    GIF = "GIF"
+}
+/**
  * Interface defining D2 configuration.
  */
 export interface Config {
@@ -86,4 +97,6 @@ export interface Config {
     fontBold?: string | undefined;
     /** Path to .ttf file to use for the semibold font. If none provided, Source Sans Pro Semibold is used. (default null) */
     fontSemiBold?: string | undefined;
+    /** File type to export diagram images as, either SVG, PNG or GIF. (default SVG) */
+    fileType?: FileType | undefined;
 }
