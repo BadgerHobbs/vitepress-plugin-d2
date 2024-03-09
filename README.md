@@ -72,3 +72,23 @@ export default defineConfig({
   },
 });
 ```
+
+## Usage
+
+To use the D2 diagram plugin you just need to specify the `d2` language next to the backticks before the fenced code block.
+
+````
+```d2
+x -> y
+```
+````
+
+See the `/example` directory within the repository for a full working example of how to use the plugin with VitePress.
+
+## Further Reading
+
+For further documentation on how to render different types of diagrams using D2, you can checkout the [official documentation here](https://d2lang.com/tour/intro/).
+
+## License
+
+The scripts and documentation in this project are released under the [MIT License](LICENSE).
