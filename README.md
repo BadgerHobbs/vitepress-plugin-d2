@@ -1,5 +1,10 @@
 # vitepress-plugin-d2
+
+[![Publish to NPM](https://github.com/BadgerHobbs/vitepress-plugin-d2/actions/workflows/publish.yml/badge.svg)](https://github.com/BadgerHobbs/vitepress-plugin-d2/actions/workflows/publish.yml) [![Deploy Example](https://github.com/BadgerHobbs/vitepress-plugin-d2/actions/workflows/deploy-example.yml/badge.svg)](https://github.com/BadgerHobbs/vitepress-plugin-d2/actions/workflows/deploy-example.yml)
+
 Plugin for VitePress to add support for rendering D2 diagrams.
+
+![vitepress-plugin-d2](https://github.com/BadgerHobbs/vitepress-plugin-d2/assets/23462440/e681d6d7-b084-4b71-be22-a792029377db)
 
 ## Requirements
 
@@ -103,7 +108,9 @@ See the `/example` directory within the repository for a full working example of
 
 ## Further Reading
 
-For further documentation on how to render different types of diagrams using D2, you can checkout the [official documentation here](https://d2lang.com/tour/intro/).
+To view working examples deployed within a VitePress static site instance, you can checkout the repository example deployed via GitHub pages [here](https://badgerhobbs.github.io/vitepress-plugin-d2/).
+
+For more information about D2 and it's capabilities, checkout the official documentation [here](https://d2lang.com/tour/intro/).
 
 ## License
 
