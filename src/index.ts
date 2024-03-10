@@ -115,7 +115,7 @@ export default function d2(md: any, defaultConfig: Config = {}) {
         const config = { ...defaultConfig, ...diagramConfig };
   
         // Create output directory if not exist
-        const outputDir = `/${config.directory ?? "d2-diagrams"}`;
+        const outputDir = `./${config.directory ?? "d2-diagrams"}`;
         if (!existsSync(outputDir)) {
           mkdirSync(outputDir, { recursive: true });
         }

@@ -49,11 +49,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Setup d2-diagrams directory
-        run: |
-          sudo mkdir /d2-diagrams
-          sudo chown -R $(whoami) /d2-diagrams
-        
       - name: Build with VitePress
         env:
           BASE_PATH: "/vitepress-plugin-d2/"
