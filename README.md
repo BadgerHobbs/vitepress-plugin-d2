@@ -13,10 +13,10 @@ The plugin requires the D2 diagram language to be installed on your system, it i
 You can use the following command on Linux to install D2 ([official docs](https://d2lang.com/tour/install)).
 
 ```bash
-curl -fsSL https://d2lang.com/install.sh | sh -s -- --tala
+curl -fsSL https://d2lang.com/install.sh | sh -s --
 ```
 
-If you are running on Windows, you can install the latest release `.msi` file from the official GitHub repo [here](https://github.com/terrastruct/TALA/releases/).
+If you are running on Windows, you can install the latest release `.msi` file from the official GitHub repo [here](https://github.com/terrastruct/d2/releases/).
 
 Once you have installed D2, you can check it is working by running the following command.
 
