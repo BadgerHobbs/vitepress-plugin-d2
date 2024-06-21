@@ -441,3 +441,43 @@ identity provider: Indentity Provider {
 }
 ```
 ````
+
+## Interactive Tooltips
+
+```d2
+x: {tooltip: Total abstinence is easier than perfect moderation}
+y: {tooltip: Gee, I feel kind of LIGHT in the head now,\nknowing I can't make my satellite dish PAYMENTS!}
+x -> y
+```
+
+````
+```d2
+x: {tooltip: Total abstinence is easier than perfect moderation}
+y: {tooltip: Gee, I feel kind of LIGHT in the head now,\nknowing I can't make my satellite dish PAYMENTS!}
+x -> y
+```
+````
+
+## Interactive Links
+
+```d2
+x: I'm a Mac {
+  link: https://apple.com
+}
+y: And I'm a PC {
+  link: https://microsoft.com
+}
+x -> y: gazoontite
+```
+
+````
+```d2
+x: I'm a Mac {
+  link: https://apple.com
+}
+y: And I'm a PC {
+  link: https://microsoft.com
+}
+x -> y: gazoontite
+```
+````
