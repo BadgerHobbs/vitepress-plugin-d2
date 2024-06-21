@@ -201,11 +201,27 @@ export default function d2(md: any, defaultConfig: Config = {}) {
             console.error(`Error: Failed to generate D2 diagram.\n${command.stderr}`);
         }
 
-        // Get diagram image file content as a base64-encoded string
-        const imageContent = readFileSync(imageFilePath, { encoding: "base64" });
+        // For SVG, read the content directly. Otherwise, read as base64
+        let imageContent: string;
+        if (fileType === FileType.SVG) {
+            let svgContent = readFileSync(imageFilePath, { encoding: "utf-8" });
+
+            // Replace <style> tags with <svg:style> to avoid Vue errors
+            svgContent = svgContent.replace(/<style/gi, "<svg:style");
+            svgContent = svgContent.replace(/<\/style>/gi, "</svg:style>");
+
+            // Replace <script> tags with <svg:script> to avoid Vue errors
+            svgContent = svgContent.replace(/<script/gi, "<svg:script");
+            svgContent = svgContent.replace(/<\/script>/gi, "</svg:script>");
+
+            // Remove the XML processing instruction, if present.
+            imageContent = svgContent.replace(/<\?xml[^>]*\?>/gi, "");
+        } else {
+            imageContent = readFileSync(imageFilePath, { encoding: "base64" });
+        }
 
         // Get media type from file type
-        let mediaType;
+        let mediaType: string;
         switch(fileType) {
             case FileType.SVG:
                 mediaType = "image/svg+xml";
@@ -218,8 +234,16 @@ export default function d2(md: any, defaultConfig: Config = {}) {
                 break;
         }
         
-        // Create data URI for diagram image in base64 format
-        const dataUri = `data:${mediaType};base64,${imageContent}`;
+        // Create an image tag for PNG and GIF, or directly embed SVG
+        let imageHtml: string;
+        if (fileType === FileType.SVG) {
+            // Directly embed the SVG XML into the HTML to enable interactive functionality
+            imageHtml = `<div class="d2-diagram">${imageContent}</div>`;
+        } else {
+            // Create data URI for non-SVG image types in base64 format
+            const dataUri = `data:${mediaType};base64,${imageContent}`;
+            imageHtml = `<img src="${dataUri}" class="d2-diagram" alt="D2 Diagram" />`;
+        }
 
         // Delete the image file as no longer required
         unlinkSync(imageFilePath);
@@ -227,8 +251,8 @@ export default function d2(md: any, defaultConfig: Config = {}) {
         // Delete temporary D2 file
         unlinkSync(tempD2FilePath);
 
-        // Return an image tag with the Data URI as the source
-        return `<img src="${dataUri}" class="d2-diagram" alt="D2 Diagram" />`;
+        // Return rendered diagram image html
+        return imageHtml;
     } 
         
     // For other languages return the original fence
