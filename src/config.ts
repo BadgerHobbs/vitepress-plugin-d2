@@ -81,6 +81,9 @@ export enum FileType {
   /** SVG is the default export format on the CLI. If you don't specify an output, the export file will be the input name as an SVG file. */
   SVG = "SVG",
 
+  /** Base64 SVG exports the SVG as a base64 string instead of the default HTML elements. */
+  BASE64_SVG = "BASE64_SVG",
+
   /** PNG exports work by Playwright spinning up a headless browser, putting the SVG onto it, and taking a screenshot. The first invocation of Playwright will download its dependencies, if they don't already exist on the machine. */
   PNG = "PNG",
 
@@ -137,7 +140,7 @@ export interface Config {
   /** Path to .ttf file to use for the semibold font. If none provided, Source Sans Pro Semibold is used. (default null) */
   fontSemiBold?: string | undefined;
 
-  /** File type to export diagram images as, either SVG, PNG or GIF. (default SVG) */
+  /** File type to export diagram images as, either SVG, BASE64_SVG, PNG or GIF. (default SVG) */
   fileType?: FileType | undefined;
 
   /** Directory to export temporary diagram files and images to. (default d2-diagrams) */

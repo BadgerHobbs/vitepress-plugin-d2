@@ -201,9 +201,27 @@ export default function d2(md: any, defaultConfig: Config = {}) {
             console.error(`Error: Failed to generate D2 diagram.\n${command.stderr}`);
         }
 
-        // For SVG, read the content directly. Otherwise, read as base64
-        let imageContent: string;
+        // Get media type from file type
+        let mediaType: string;
+        switch(fileType) {
+            case FileType.SVG:
+                mediaType = "image/svg+xml";
+                break;
+            case FileType.BASE64_SVG:
+                mediaType = "image/svg+xml";
+                break;
+            case FileType.PNG:
+                mediaType = "image/png";
+                break;
+            case FileType.GIF:
+                mediaType = "image/gif";
+                break;
+        }
+        
+        // Create an image tag for PNG, GIF and Base64 SVG, or directly embed SVG
+        let imageHtml: string;
         if (fileType === FileType.SVG) {
+            // Directly embed the SVG XML into the HTML to enable interactive functionality
             let svgContent = readFileSync(imageFilePath, { encoding: "utf-8" });
 
             // Replace <style> tags with <svg:style> to avoid Vue errors
@@ -215,32 +233,12 @@ export default function d2(md: any, defaultConfig: Config = {}) {
             svgContent = svgContent.replace(/<\/script>/gi, "</svg:script>");
 
             // Remove the XML processing instruction, if present.
-            imageContent = svgContent.replace(/<\?xml[^>]*\?>/gi, "");
-        } else {
-            imageContent = readFileSync(imageFilePath, { encoding: "base64" });
-        }
+            svgContent = svgContent.replace(/<\?xml[^>]*\?>/gi, "");
 
-        // Get media type from file type
-        let mediaType: string;
-        switch(fileType) {
-            case FileType.SVG:
-                mediaType = "image/svg+xml";
-                break;
-            case FileType.PNG:
-                mediaType = "image/png";
-                break;
-            case FileType.GIF:
-                mediaType = "image/gif";
-                break;
-        }
-        
-        // Create an image tag for PNG and GIF, or directly embed SVG
-        let imageHtml: string;
-        if (fileType === FileType.SVG) {
-            // Directly embed the SVG XML into the HTML to enable interactive functionality
-            imageHtml = `<div class="d2-diagram">${imageContent}</div>`;
+            imageHtml = `<div class="d2-diagram">${svgContent}</div>`;
         } else {
-            // Create data URI for non-SVG image types in base64 format
+            // Create data URI for image types in base64 format
+            const imageContent = readFileSync(imageFilePath, { encoding: "base64" });
             const dataUri = `data:${mediaType};base64,${imageContent}`;
             imageHtml = `<img src="${dataUri}" class="d2-diagram" alt="D2 Diagram" />`;
         }
