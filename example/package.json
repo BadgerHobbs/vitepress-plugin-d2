@@ -13,7 +13,9 @@
   "license": "ISC",
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "vitepress": "^1.0.0-rc.45",
-    "vitepress-plugin-d2": "^1.0.3"
+    "vitepress": "^1.0.0-rc.45"
+  },
+  "dependencies": {
+    "vitepress-plugin-d2": "file:.."
   }
 }
