@@ -1,25 +1,22 @@
 name: Publish to NPM
+
 on:
   release:
     types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # Required for OIDC
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      
     steps:
-      - uses: actions/checkout@v6
-      # Setup .npmrc file to publish to npm
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
-
-      - run: |
-          NODE_AUTH_TOKEN="" npm publish
-
+          node-version: lts/*
       - run: npm ci
       - run: npm run build
-      - run: npm publish --provenance --access public
+      - run: npm publish --verbose
