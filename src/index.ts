@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { spawnSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
@@ -11,10 +12,10 @@ import { Config, Layout, FileType, Theme } from "./config.js";
 function parseAndConvertConfig(code: string): { config: Config; code: string } {
     // Define the regex for parsing the config
     const configRegex = /:::config([\s\S]+?):::/g;
-    
+
     // Temporary storage for the string config
     const userConfig: Record<string, string> = {};
-  
+
     // Parse the config from the code block
     const matches = code.matchAll(configRegex);
     for (const match of matches) {
@@ -28,10 +29,10 @@ function parseAndConvertConfig(code: string): { config: Config; code: string } {
         }
       }
     }
-  
+
     // Clean the diagram code by removing the config
     code = code.replace(configRegex, "").trim();
-  
+
     // Convert string config into actual config values
     const config: Config = {};
     for (const [key, stringValue] of Object.entries(userConfig)) {
@@ -89,47 +90,67 @@ function parseAndConvertConfig(code: string): { config: Config; code: string } {
           break;
       }
     }
-    
+
     return { config, code };
   }
 
 /**
+ * Compute a cache key from diagram code and resolved config.
+ * @param code Diagram D2 code.
+ * @param config Resolved D2 plugin config.
+ * @returns SHA-256 hex digest.
+ */
+function cacheKey(code: string, config: Config): string {
+    const data = JSON.stringify({ code, config });
+    return createHash("sha256").update(data).digest("hex");
+}
+
+/**
  * D2 plugin to convert markdown D2 code blocks to images.
  * @param md Markdown.
- * @param defaultConfig Default D2 plugin config. 
+ * @param defaultConfig Default D2 plugin config.
  */
 export default function d2(md: any, defaultConfig: Config = {}) {
     // Store original fence to return if no D2 diagram rendered
     const originalFence = md.renderer.rules.fence.bind(md.renderer.rules);
-  
+
     md.renderer.rules.fence = (tokens: any, idx: any, options: any, env: any, slf: any) => {
       const token = tokens[idx];
       const tokenInfo = token.info.toLowerCase();
-  
+
       // If code fence is for D2 diagram
       if (tokenInfo === "d2" || tokenInfo === "d2lang") {
 
         const { config: diagramConfig, code: code } = parseAndConvertConfig(token.content);
-  
+
         // Merge default config with diagram config
         const config = { ...defaultConfig, ...diagramConfig };
-  
+
         // Create output directory if not exist
         const outputDir = `./${config.directory ?? "d2-diagrams"}`;
         if (!existsSync(outputDir)) {
           mkdirSync(outputDir, { recursive: true });
         }
-  
+
         // Get filetype
         const fileType = FileType[config.fileType ?? FileType.SVG]
 
+        // Check cache, skip D2 rendering if this exact diagram+config was already built
+        const hash = cacheKey(code, config);
+        const cacheDir = path.join(outputDir, ".cache");
+        const cacheFilePath = path.join(cacheDir, `${hash}.html`);
+
+        if (existsSync(cacheFilePath)) {
+            return readFileSync(cacheFilePath, { encoding: "utf-8" });
+        }
+
         // Generate unique filename for diagram image output file
         const imageFilePath = path.join(outputDir, `d2-diagram-${Date.now()}.${fileType.toLowerCase()}`);
-        
+
         // Write the D2 diagram code to a temporary .d2 file
         const tempD2FilePath = path.join(outputDir, "temp.d2");
         writeFileSync(tempD2FilePath, code);
-  
+
         // Construct command line arguments from config
         const args = [tempD2FilePath, imageFilePath];
 
@@ -195,7 +216,7 @@ export default function d2(md: any, defaultConfig: Config = {}) {
 
         // Run D2 command to generate output diagram image file
         const command = spawnSync("d2", args, { encoding: "utf-8", stdio: "pipe" });
-        
+
         // Log any error with D2 command
         if (command.status !== 0) {
             console.error(`Error: Failed to generate D2 diagram.\n${command.stderr}`);
@@ -217,7 +238,7 @@ export default function d2(md: any, defaultConfig: Config = {}) {
                 mediaType = "image/gif";
                 break;
         }
-        
+
         // Create an image tag for PNG, GIF and Base64 SVG, or directly embed SVG
         let imageHtml: string;
         if (fileType === FileType.SVG) {
@@ -249,10 +270,18 @@ export default function d2(md: any, defaultConfig: Config = {}) {
         // Delete temporary D2 file
         unlinkSync(tempD2FilePath);
 
+        // Write to cache for future builds (only if D2 succeeded)
+        if (command.status === 0) {
+            if (!existsSync(cacheDir)) {
+                mkdirSync(cacheDir, { recursive: true });
+            }
+            writeFileSync(cacheFilePath, imageHtml);
+        }
+
         // Return rendered diagram image html
         return imageHtml;
-    } 
-        
+    }
+
     // For other languages return the original fence
     return originalFence(tokens, idx, options, env, slf);
   }
